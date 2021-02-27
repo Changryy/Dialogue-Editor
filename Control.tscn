@@ -34,15 +34,16 @@ anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 right_disconnects = true
+scroll_offset = Vector2( -124.704, 0 )
 use_snap = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Start" type="GraphNode" parent="GraphEdit"]
-margin_left = 30.0
+margin_left = 154.704
 margin_top = 260.0
-margin_right = 91.0
+margin_right = 215.704
 margin_bottom = 286.0
 mouse_filter = 1
 custom_styles/commentfocus = SubResource( 1 )
@@ -84,5 +85,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="connection_request" from="GraphEdit" to="." method="_on_GraphEdit_connection_request"]
+[connection signal="disconnection_request" from="GraphEdit" to="." method="_on_GraphEdit_disconnection_request"]
 [connection signal="popup_request" from="GraphEdit" to="." method="_on_GraphEdit_popup_request"]
 [connection signal="id_pressed" from="PopupMenu" to="." method="_on_PopupMenu_id_pressed"]

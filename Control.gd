@@ -1,5 +1,7 @@
 extends Control
 
+onready var g = $GraphEdit
+
 var scenes = {
 	0:preload("res://Nodes/Text.tscn"),
 	1:preload("res://Nodes/Options.tscn"),
@@ -15,9 +17,13 @@ func _on_GraphEdit_popup_request(position):
 
 func _on_PopupMenu_id_pressed(id):
 	var node = scenes[id].instance()
-	node.offset = $PopupMenu.rect_position - Vector2(10,0) + $GraphEdit.scroll_offset
-	$GraphEdit.add_child(node)
+	node.offset = ($PopupMenu.rect_position + g.scroll_offset) / g.zoom
+	g.add_child(node)
 
 
 func _on_GraphEdit_connection_request(from, from_slot, to, to_slot):
-	$GraphEdit.connect_node(from, from_slot, to, to_slot)
+	g.connect_node(from, from_slot, to, to_slot)
+
+
+func _on_GraphEdit_disconnection_request(from, from_slot, to, to_slot):
+	g.disconnect_node(from, from_slot, to, to_slot)
