@@ -1,0 +1,149 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://Misc/PlaceholderText.gd" type="Script" id=1]
+[ext_resource path="res://GraphEditors/Nodes/Template/Node.tscn" type="PackedScene" id=2]
+
+[sub_resource type="StyleBoxFlat" id=1]
+content_margin_left = 28.0
+content_margin_right = 28.0
+content_margin_top = 24.0
+content_margin_bottom = 5.0
+bg_color = Color( 0, 0, 0, 0.701961 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id=2]
+content_margin_left = 28.0
+content_margin_right = 28.0
+content_margin_top = 24.0
+content_margin_bottom = 5.0
+bg_color = Color( 0, 0.0941176, 0.14902, 0.701961 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id=3]
+content_margin_left = 3.0
+content_margin_right = 3.0
+content_margin_top = 3.0
+bg_color = Color( 0, 0, 0, 0 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 1, 1, 1 )
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+corner_detail = 5
+
+[node name="Scene" groups=[
+"colourful",
+] instance=ExtResource( 2 )]
+anchor_bottom = 0.173333
+custom_styles/commentfocus = SubResource( 1 )
+custom_styles/comment = SubResource( 1 )
+custom_styles/frame = SubResource( 1 )
+custom_styles/selectedframe = SubResource( 2 )
+custom_styles/position = SubResource( 1 )
+custom_styles/defaultfocus = SubResource( 1 )
+custom_styles/breakpoint = SubResource( 1 )
+custom_styles/defaultframe = SubResource( 1 )
+title = ""
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color( 1, 1, 1, 1 )
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color( 1, 1, 1, 1 )
+type = 2
+colour_path = NodePath("Top/Colour")
+characters = NodePath("Characters")
+
+[node name="Top" type="HBoxContainer" parent="." index="0"]
+margin_left = 28.0
+margin_top = 24.0
+margin_right = 183.0
+margin_bottom = 46.0
+
+[node name="Name" type="LineEdit" parent="Top" index="0"]
+margin_right = 87.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+placeholder_text = "Name"
+
+[node name="Colour" type="ColorPickerButton" parent="Top" index="1"]
+margin_left = 91.0
+margin_right = 115.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 24, 0 )
+color = Color( 1, 1, 1, 1 )
+edit_alpha = false
+
+[node name="Edit" type="Button" parent="Top" index="2"]
+margin_left = 119.0
+margin_right = 155.0
+margin_bottom = 22.0
+text = "Edit"
+
+[node name="Characters" type="RichTextLabel" parent="." index="1"]
+margin_left = 28.0
+margin_top = 47.0
+margin_right = 183.0
+margin_bottom = 66.0
+custom_styles/focus = SubResource( 3 )
+custom_styles/normal = SubResource( 3 )
+bbcode_enabled = true
+bbcode_text = "No Characters"
+text = "No Characters"
+fit_content_height = true
+scroll_active = false
+
+[node name="Description" type="TextEdit" parent="." index="2" groups=[
+"big",
+]]
+margin_left = 28.0
+margin_top = 67.0
+margin_right = 183.0
+margin_bottom = 94.0
+rect_min_size = Vector2( 0, 27 )
+wrap_enabled = true
+script = ExtResource( 1 )
+label = NodePath("Label")
+placeholder = "Description"
+alpha = 0.6
+
+[node name="Label" type="Label" parent="Description" index="6"]
+modulate = Color( 1, 1, 1, 0.6 )
+margin_left = 2.0
+margin_right = 8.0
+margin_bottom = 22.0
+text = "Description"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="color_changed" from="Top/Colour" to="." method="_on_Colour_color_changed"]

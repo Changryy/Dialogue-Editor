@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://Nodes/Template/GraphNode.gd" type="Script" id=1]
-[ext_resource path="res://theme.tres" type="Theme" id=2]
+[ext_resource path="res://GraphEditors/Nodes/Template/GraphNode.gd" type="Script" id=1]
+[ext_resource path="res://Misc/theme.tres" type="Theme" id=2]
 
 [node name="Node" type="GraphNode"]
 anchor_right = 0.206055
