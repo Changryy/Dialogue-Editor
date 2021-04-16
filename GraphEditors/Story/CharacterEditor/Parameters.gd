@@ -20,7 +20,7 @@ func _on_Tree_select(id, selected=false):
 			CharacterHandler.selection.erase(character)
 	# text
 	if len(CharacterHandler.selection) > 1:
-		set_name("Multiple Characters Selected", true)
+		set_name("Multiple Selected", true)
 	elif len(CharacterHandler.selection) < 1: set_name("", true)
 	else: set_name()
 	# single item selected
@@ -41,13 +41,13 @@ func _on_Tree_select(id, selected=false):
 	colour_picker.color = CharacterHandler.selection[0].colour
 	
 	for c in animation_container.get_children(): c.queue_free()
-	var animations = CharacterHandler.selection[0].animations
-	for item in CharacterHandler.selection:
-		for animation in animations:
-			if not animation in item.animations:
-				animations.erase(animation)
-	for animation in animations:
-		create(animation)
+	
+	var animation_names = get_common_animations()
+	for animation in animation_names:
+		var animations = []
+		for item in CharacterHandler.selection:
+			animations += item.get_all_animations(animation)
+		create(animations)
 
 func set_name(text="", read_only=false):
 	if read_only:
@@ -93,7 +93,7 @@ func _on_Name_text_changed(new_text):
 func change_colour(group, colour, is_subresource=true):
 	for item in group:
 		if item.id == 0: continue
-		if is_subresource and item.colour != item.inherits.colour: continue
+		if is_subresource and item.colour != item.parent.colour: continue
 		if item.is_group: change_colour(item.get_members(), colour)
 		item.colour = colour
 		emit_signal("update_item", item.id)
@@ -114,13 +114,26 @@ func _on_Tree_deselect():
 	description.hide()
 
 
-func create(animation):
+func create(animations):
 	var new_animation = animation_source.instance()
-	new_animation.data = animation
+	new_animation.animations = animations
 	animation_container.add_child(new_animation)
 
 
 func _on_AddAnimation_pressed():
-	pass
+	var animations = []
+	for item in CharacterHandler.selection:
+		animations += item.create_animation()
+	if len(animations) == 0: return
+	create(animations)
 
-
+func get_common_animations():
+	var result = []
+	for animation in CharacterHandler.selection[0].animations:
+		result.append(animation.name)
+	for item in CharacterHandler.selection:
+		var animations = []
+		for a in item.animations: animations.append(a.name)
+		for a in result:
+			if not a in animations: result.erase(a)
+	return result

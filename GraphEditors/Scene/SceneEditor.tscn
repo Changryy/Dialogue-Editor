@@ -23,8 +23,6 @@ scenes = [ ExtResource( 1 ), ExtResource( 4 ), ExtResource( 3 ), ExtResource( 5 
 [node name="GraphEdit" type="GraphEdit" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
 right_disconnects = true
 use_snap = false
 __meta__ = {

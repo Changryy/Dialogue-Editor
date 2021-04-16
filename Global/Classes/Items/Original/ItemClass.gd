@@ -23,6 +23,7 @@ func reparent(new):
 		member.reparent(self)
 
 func get_members():
+	if !is_group: return []
 	var result = []
 	for item in handler.items:
 		if item.parent == self: result.append(item)

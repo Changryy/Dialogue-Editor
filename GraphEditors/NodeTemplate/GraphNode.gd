@@ -36,7 +36,7 @@ func _on_Node_resize_request(new_minsize):
 func choice_resize(new_minsize):
 	var new_size = new_minsize.y - OFFSET.x - OFFSET.y
 	new_size /= LINE
-	new_size = max(int(new_size),1)
+	new_size = max(int(new_size),2)
 	for i in range(max(get_child_count(),new_size)):
 		if i >= new_size: get_child(i).queue_free()
 		elif i >= get_child_count():

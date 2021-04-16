@@ -18,4 +18,5 @@ func visibility_update():
 		if len(text) > 0: get_node(label).hide()
 		else: get_node(label).show()
 
-func _ready(): connect("text_changed", self, "visibility_update")
+func _ready():
+	connect("text_changed", self, "visibility_update")

@@ -2,10 +2,17 @@
 
 [ext_resource path="res://GraphEditors/Story/CharacterEditor/Parameters.gd" type="Script" id=1]
 [ext_resource path="res://Misc/PlaceholderText.gd" type="Script" id=2]
-[ext_resource path="res://Misc/Splitter.gd" type="Script" id=3]
 [ext_resource path="res://GraphEditors/Story/CharacterEditor/Tree.gd" type="Script" id=4]
 [ext_resource path="res://GraphEditors/Story/CharacterEditor/Animation/Animation.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Misc/theme.tres" type="Theme" id=6]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends SplitContainer
+
+func _ready(): connect(\"dragged\", self, \"dragged\")
+
+func dragged(offset): split_offset = offset
+"
 
 [node name="Control" type="Control"]
 anchor_right = 1.0
@@ -26,7 +33,7 @@ __meta__ = {
 [node name="Splitter" type="HSplitContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource( 3 )
+script = SubResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -114,7 +121,7 @@ margin_right = 508.0
 margin_bottom = 578.0
 size_flags_vertical = 3
 split_offset = 140
-script = ExtResource( 3 )
+script = SubResource( 1 )
 
 [node name="Description" type="TextEdit" parent="Splitter/Parameters/Splitter"]
 margin_right = 508.0

@@ -3,12 +3,10 @@
 [ext_resource path="res://GraphEditors/NodeTemplate/GraphNode.gd" type="Script" id=1]
 [ext_resource path="res://Misc/theme.tres" type="Theme" id=2]
 
-
 [node name="Node" type="GraphNode"]
-anchor_right = 0.206055
-anchor_bottom = 0.123333
 margin_right = 1.52588e-05
 margin_bottom = 10.0
+rect_min_size = Vector2( 211, 84 )
 theme = ExtResource( 2 )
 title = "Name"
 show_close = true

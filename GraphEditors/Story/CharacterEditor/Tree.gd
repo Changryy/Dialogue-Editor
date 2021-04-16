@@ -7,3 +7,4 @@ func _ready():
 func _on_AddCharacter_pressed():
 	var item = create(CharacterHandler.create())
 	item.set_text(0,handler.DEFAULT_CHARACTER_NAME)
+

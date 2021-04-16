@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://GraphEditors/Editor.gd" type="Script" id=1]
 [ext_resource path="res://GraphEditors/Story/Nodes/Scene.tscn" type="PackedScene" id=2]
 [ext_resource path="res://GraphEditors/Scene/Nodes/Start.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Misc/theme.tres" type="Theme" id=4]
+[ext_resource path="res://Misc/PlaceholderText.gd" type="Script" id=6]
+[ext_resource path="res://GraphEditors/Story/CharacterEditor/Tree.gd" type="Script" id=7]
+[ext_resource path="res://GraphEditors/Story/CharacterEditor/Parameters.gd" type="Script" id=8]
+[ext_resource path="res://GraphEditors/Story/CharacterEditor/Animation/Animation.tscn" type="PackedScene" id=9]
 
 [node name="Story" type="Control"]
 anchor_right = 1.0
@@ -13,9 +17,17 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-g = NodePath("GraphEdit")
+g = NodePath("Split/Split/GraphEdit")
 add_node = NodePath("AddNode")
 scenes = [ ExtResource( 2 ) ]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.12549, 0.141176, 0.192157, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="AddNode" type="PopupMenu" parent="."]
 margin_left = 499.495
@@ -25,54 +37,309 @@ margin_bottom = 282.023
 items = [ "Add Scene", null, 0, false, false, 0, 0, null, "", false ]
 hide_on_state_item_selection = true
 
-[node name="GraphEdit" type="GraphEdit" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_horizontal = 3
-use_snap = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Start" parent="GraphEdit" instance=ExtResource( 3 )]
-margin_left = 30.0
-margin_top = 260.0
-margin_right = 91.0
-margin_bottom = 290.0
-
 [node name="Split" type="HSplitContainer" parent="."]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = 40.0
+split_offset = 134
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="VBoxContainer" parent="Split"]
-margin_right = 101.0
-margin_bottom = 560.0
+[node name="Tabs" type="TabContainer" parent="Split"]
+margin_right = 144.0
+margin_bottom = 600.0
+tab_align = 0
+
+[node name="Characters" type="Control" parent="Split/Tabs"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 29.0
+margin_right = -5.0
+margin_bottom = -5.0
+
+[node name="Characters" type="VBoxContainer" parent="Split/Tabs/Characters"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_clip_content = true
 custom_constants/separation = 0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Characters" type="Tree" parent="Split/HBoxContainer"]
-margin_right = 101.0
-margin_bottom = 538.0
+[node name="Tree" type="Tree" parent="Split/Tabs/Characters/Characters"]
+margin_right = 134.0
+margin_bottom = 544.0
 size_flags_vertical = 3
+hide_root = true
+select_mode = 2
+script = ExtResource( 7 )
+
+[node name="AddCharacter" type="Button" parent="Split/Tabs/Characters/Characters"]
+margin_top = 544.0
+margin_right = 134.0
+margin_bottom = 566.0
+text = "Add Character"
+
+[node name="Clues" type="Control" parent="Split/Tabs"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 29.0
+margin_right = -334.0
+margin_bottom = -531.0
+
+[node name="Split" type="HSplitContainer" parent="Split"]
+margin_left = 152.0
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+split_offset = -184
+
+[node name="GraphEdit" type="GraphEdit" parent="Split/Split"]
+margin_right = 680.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+scroll_offset = Vector2( -319, 0 )
+use_snap = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Button" type="Button" parent="Split/HBoxContainer"]
-margin_top = 538.0
-margin_right = 101.0
-margin_bottom = 560.0
-text = "Add Character"
+[node name="Start" parent="Split/Split/GraphEdit" instance=ExtResource( 3 )]
+margin_left = 19.0
+margin_top = 260.0
+margin_right = 80.0
+margin_bottom = 290.0
+offset = Vector2( -300, 260 )
 
-[node name="Control" type="Control" parent="Split"]
-margin_left = 109.0
-margin_right = 1024.0
-margin_bottom = 560.0
-[connection signal="empty_rmb" from="Split/HBoxContainer/Characters" to="Split/HBoxContainer/Characters" method="_on_Characters_empty_rmb"]
+[node name="Parameters" type="Control" parent="Split/Split"]
+margin_left = 688.0
+margin_right = 872.0
+margin_bottom = 600.0
+
+[node name="Characters" type="VBoxContainer" parent="Split/Split/Parameters"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 0
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+name_edit = NodePath("Header/Name")
+name_label = NodePath("Header/Label")
+colour_picker = NodePath("Header/Colour")
+description = NodePath("Splitter/Description")
+animation_container = NodePath("Splitter/ScrollContainer/Animations")
+header = NodePath("Header")
+group_note = NodePath("Group")
+animation_source = ExtResource( 9 )
+
+[node name="Header" type="HBoxContainer" parent="Split/Split/Parameters/Characters"]
+margin_right = 184.0
+margin_bottom = 22.0
+custom_constants/separation = 0
+
+[node name="Name" type="LineEdit" parent="Split/Split/Parameters/Characters/Header"]
+margin_right = 128.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+placeholder_text = "Name"
+
+[node name="Label" type="Label" parent="Split/Split/Parameters/Characters/Header"]
+visible = false
+margin_left = 119.0
+margin_right = 310.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Multiple Selected"
+clip_text = true
+
+[node name="Colour" type="ColorPickerButton" parent="Split/Split/Parameters/Characters/Header"]
+margin_left = 128.0
+margin_right = 156.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 28, 22 )
+color = Color( 1, 1, 1, 1 )
+edit_alpha = false
+
+[node name="Delete" type="Button" parent="Split/Split/Parameters/Characters/Header"]
+margin_left = 156.0
+margin_right = 184.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 28, 0 )
+custom_colors/font_color_disabled = Color( 1, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_colors/font_color_hover = Color( 1, 0, 0, 1 )
+custom_colors/font_color_pressed = Color( 1, 0, 0, 1 )
+text = "X"
+
+[node name="Splitter" type="VSplitContainer" parent="Split/Split/Parameters/Characters"]
+margin_top = 22.0
+margin_right = 184.0
+margin_bottom = 578.0
+size_flags_vertical = 3
+split_offset = 140
+
+[node name="Description" type="TextEdit" parent="Split/Split/Parameters/Characters/Splitter"]
+margin_right = 184.0
+margin_bottom = 148.0
+script = ExtResource( 6 )
+label = NodePath("../../../Control/Parameters/Splitter/Description/Label")
+placeholder = "Description"
+alpha = 0.4
+
+[node name="Label" type="Label" parent="Split/Split/Parameters/Characters/Splitter/Description"]
+modulate = Color( 1, 1, 1, 0.4 )
+margin_left = 2.0
+margin_right = 8.0
+margin_bottom = 22.0
+text = "Description"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Split/Split/Parameters/Characters/Splitter"]
+margin_top = 156.0
+margin_right = 184.0
+margin_bottom = 556.0
+
+[node name="Animations" type="VBoxContainer" parent="Split/Split/Parameters/Characters/Splitter/ScrollContainer"]
+margin_right = 184.0
+margin_bottom = 400.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Group" type="RichTextLabel" parent="Split/Split/Parameters/Characters"]
+visible = false
+margin_top = 525.0
+margin_right = 508.0
+margin_bottom = 578.0
+text = "Note that this is a group.
+Animations that are edited here will be edited globally for all the characters inside the group."
+fit_content_height = true
+
+[node name="AddAnimation" type="Button" parent="Split/Split/Parameters/Characters"]
+margin_top = 578.0
+margin_right = 184.0
+margin_bottom = 600.0
+text = "Add Animation"
+
+[node name="Clues" type="VBoxContainer" parent="Split/Split/Parameters"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Header" type="HBoxContainer" parent="Split/Split/Parameters/Clues"]
+margin_right = 184.0
+margin_bottom = 22.0
+custom_constants/separation = 0
+
+[node name="Name" type="LineEdit" parent="Split/Split/Parameters/Clues/Header"]
+margin_right = 128.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+placeholder_text = "Name"
+
+[node name="Label" type="Label" parent="Split/Split/Parameters/Clues/Header"]
+visible = false
+margin_left = 119.0
+margin_right = 310.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Multiple Selected"
+clip_text = true
+
+[node name="Colour" type="ColorPickerButton" parent="Split/Split/Parameters/Clues/Header"]
+margin_left = 128.0
+margin_right = 156.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 28, 22 )
+color = Color( 1, 1, 1, 1 )
+edit_alpha = false
+
+[node name="Delete" type="Button" parent="Split/Split/Parameters/Clues/Header"]
+margin_left = 156.0
+margin_right = 184.0
+margin_bottom = 22.0
+rect_min_size = Vector2( 28, 0 )
+custom_colors/font_color_disabled = Color( 1, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+custom_colors/font_color_hover = Color( 1, 0, 0, 1 )
+custom_colors/font_color_pressed = Color( 1, 0, 0, 1 )
+text = "X"
+
+[node name="Splitter" type="VSplitContainer" parent="Split/Split/Parameters/Clues"]
+margin_top = 22.0
+margin_right = 184.0
+margin_bottom = 578.0
+size_flags_vertical = 3
+split_offset = 213
+
+[node name="Obtainment" type="TextEdit" parent="Split/Split/Parameters/Clues/Splitter"]
+margin_right = 184.0
+margin_bottom = 221.0
+script = ExtResource( 6 )
+label = NodePath("../Obtainment/Label")
+placeholder = "Obtainment"
+alpha = 0.4
+
+[node name="Label" type="Label" parent="Split/Split/Parameters/Clues/Splitter/Obtainment"]
+modulate = Color( 1, 1, 1, 0.4 )
+margin_left = 2.0
+margin_right = 8.0
+margin_bottom = 22.0
+text = "Obtainment"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Description2" type="TextEdit" parent="Split/Split/Parameters/Clues/Splitter"]
+margin_top = 229.0
+margin_right = 184.0
+margin_bottom = 556.0
+script = ExtResource( 6 )
+label = NodePath("Label")
+placeholder = "Description"
+alpha = 0.4
+
+[node name="Label" type="Label" parent="Split/Split/Parameters/Clues/Splitter/Description2"]
+modulate = Color( 1, 1, 1, 0.4 )
+margin_left = 2.0
+margin_right = 8.0
+margin_bottom = 22.0
+text = "Description"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Group" type="RichTextLabel" parent="Split/Split/Parameters/Clues"]
+visible = false
+margin_top = 525.0
+margin_right = 508.0
+margin_bottom = 578.0
+fit_content_height = true
+
+[node name="AddAnimation" type="Button" parent="Split/Split/Parameters/Clues"]
+margin_top = 578.0
+margin_right = 184.0
+margin_bottom = 600.0
+text = "Add Animation"
+[connection signal="deselect" from="Split/Tabs/Characters/Characters/Tree" to="Split/Split/Parameters/Characters" method="_on_Tree_deselect"]
+[connection signal="select" from="Split/Tabs/Characters/Characters/Tree" to="Split/Split/Parameters/Characters" method="_on_Tree_select"]
+[connection signal="pressed" from="Split/Tabs/Characters/Characters/AddCharacter" to="Split/Tabs/Characters/Characters/Tree" method="_on_AddCharacter_pressed"]
+[connection signal="update_item" from="Split/Split/Parameters/Characters" to="Split/Tabs/Characters/Characters/Tree" method="update_item"]
+[connection signal="text_changed" from="Split/Split/Parameters/Characters/Header/Name" to="Split/Split/Parameters/Characters" method="_on_Name_text_changed"]
+[connection signal="color_changed" from="Split/Split/Parameters/Characters/Header/Colour" to="Split/Split/Parameters/Characters" method="_on_Colour_color_changed"]
+[connection signal="text_changed" from="Split/Split/Parameters/Characters/Splitter/Description" to="Split/Split/Parameters/Characters" method="_on_Description_text_changed"]
+[connection signal="pressed" from="Split/Split/Parameters/Characters/AddAnimation" to="Split/Split/Parameters/Characters" method="_on_AddAnimation_pressed"]
+[connection signal="pressed" from="Split/Split/Parameters/Clues/AddAnimation" to="Split/Split/Parameters/Clues" method="_on_AddAnimation_pressed"]

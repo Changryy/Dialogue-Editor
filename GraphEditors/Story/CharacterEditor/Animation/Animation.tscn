@@ -17,6 +17,7 @@ __meta__ = {
 margin_right = 968.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
+text = "Hello There"
 placeholder_text = "Name"
 
 [node name="Colour" type="ColorPickerButton" parent="."]
@@ -27,7 +28,7 @@ rect_min_size = Vector2( 28, 0 )
 color = Color( 1, 1, 1, 1 )
 edit_alpha = false
 
-[node name="Button" type="Button" parent="."]
+[node name="Delete" type="Button" parent="."]
 margin_left = 996.0
 margin_right = 1024.0
 margin_bottom = 24.0
@@ -37,3 +38,6 @@ custom_colors/font_color = Color( 1, 0, 0, 1 )
 custom_colors/font_color_hover = Color( 1, 0, 0, 1 )
 custom_colors/font_color_pressed = Color( 1, 0, 0, 1 )
 text = "X"
+[connection signal="text_changed" from="Name" to="." method="_on_Name_text_changed"]
+[connection signal="color_changed" from="Colour" to="." method="_on_Colour_color_changed"]
+[connection signal="pressed" from="Delete" to="." method="_on_Delete_pressed"]
