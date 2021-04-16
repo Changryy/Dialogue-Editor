@@ -75,11 +75,4 @@ text = "Add Character"
 margin_left = 109.0
 margin_right = 1024.0
 margin_bottom = 560.0
-[connection signal="id_pressed" from="AddNode" to="." method="_on_PopupMenu_id_pressed"]
-[connection signal="connection_request" from="GraphEdit" to="." method="_on_GraphEdit_connection_request"]
-[connection signal="disconnection_request" from="GraphEdit" to="." method="_on_GraphEdit_disconnection_request"]
-[connection signal="node_selected" from="GraphEdit" to="." method="_on_GraphEdit_node_selected"]
-[connection signal="node_unselected" from="GraphEdit" to="." method="_on_GraphEdit_node_unselected"]
-[connection signal="popup_request" from="GraphEdit" to="." method="_on_GraphEdit_popup_request"]
-[connection signal="dragged" from="Split" to="." method="_on_Split_dragged"]
 [connection signal="empty_rmb" from="Split/HBoxContainer/Characters" to="Split/HBoxContainer/Characters" method="_on_Characters_empty_rmb"]
