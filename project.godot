@@ -9,11 +9,6 @@
 config_version=4
 
 _global_script_classes=[ {
-"base": "Node2D",
-"class": "Base",
-"language": "GDScript",
-"path": "res://Base.gd"
-}, {
 "base": "Item",
 "class": "Character",
 "language": "GDScript",
@@ -43,33 +38,20 @@ _global_script_classes=[ {
 "class": "ItemHandler",
 "language": "GDScript",
 "path": "res://Global/Classes/ItemHandlerClass.gd"
-}, {
-"base": "RigidBody2D",
-"class": "RigidBone2D",
-"language": "GDScript",
-"path": "res://RigidSkeleton/RigidBoneClass.gd"
-}, {
-"base": "Skeleton2D",
-"class": "RigidSkeleton2D",
-"language": "GDScript",
-"path": "res://RigidSkeleton/RigidSkeletonClass.gd"
 } ]
 _global_script_class_icons={
-"Base": "",
 "Character": "",
 "CharacterAnimation": "",
 "Clue": "",
 "ImprovedTree": "",
 "Item": "",
-"ItemHandler": "",
-"RigidBone2D": "",
-"RigidSkeleton2D": ""
+"ItemHandler": ""
 }
 
 [application]
 
 config/name="Dialogue Editor"
-run/main_scene="res://GraphEditors/StoryEditor.tscn"
+run/main_scene="res://GraphEditors/Story/StoryEditor.tscn"
 config/icon="res://Misc/icon.png"
 
 [autoload]

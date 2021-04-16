@@ -10,7 +10,3 @@ func _ready():
 	sort()
 
 
-func _physics_process(delta):
-	if Input.is_action_just_pressed("right_click"):
-		for item in items:
-			print(item.name," - ",item.index)
