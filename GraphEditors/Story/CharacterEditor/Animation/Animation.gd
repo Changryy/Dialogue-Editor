@@ -1,4 +1,6 @@
 extends HBoxContainer
+signal confirm(node, title)
+
 
 var animations = []
 
@@ -10,11 +12,13 @@ func _ready():
 
 
 func set_colour(new_colour):
+	$Colour.color = new_colour
 	if new_colour == Color("ffffff"): new_colour = Color("262c3b")
 	var style = StyleBoxFlat.new()
 	style.bg_color = new_colour
 	$Name.set("custom_styles/normal", style)
 	$Name.set("custom_styles/focus", style)
+
 
 
 func _on_Colour_color_changed(color):
@@ -29,6 +33,12 @@ func _on_Name_text_changed(new_text):
 
 
 func _on_Delete_pressed():
+	emit_signal("confirm", self, "Delete Animation")
+
+
+func delete(node):
+	if node != self: return
 	for a in animations:
 		if !is_instance_valid(a): continue
 		a.owner.delete(a)
+	queue_free()

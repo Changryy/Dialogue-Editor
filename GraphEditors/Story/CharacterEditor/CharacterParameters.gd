@@ -1,6 +1,7 @@
 extends VBoxContainer
 signal update_item(id)
 
+export(NodePath) onready var confirm = get_node(confirm) as ConfirmationDialog
 export(NodePath) onready var name_edit = get_node(name_edit) as LineEdit
 export(NodePath) onready var name_label = get_node(name_label) as Label
 export(NodePath) onready var colour_picker = get_node(colour_picker) as ColorPickerButton
@@ -10,7 +11,14 @@ export(NodePath) onready var header = get_node(header) as HBoxContainer
 export(NodePath) onready var group_note = get_node(group_note) as RichTextLabel
 export(PackedScene) var animation_source
 
+
+func _ready():
+	confirm.connect("action_confirmed", self, "delete_confirmed")
+
+
 func _on_Tree_select(id, selected=false):
+	show()
+	get_parent().show()
 	var character = CharacterHandler.get_item(id)
 	if character:
 		if selected:
@@ -35,7 +43,6 @@ func _on_Tree_select(id, selected=false):
 		description.hide()
 	else:
 		header.show()
-		description.show()
 	
 	if len(CharacterHandler.selection) < 1: return
 	colour_picker.color = CharacterHandler.selection[0].colour
@@ -54,7 +61,7 @@ func set_name(text="", read_only=false):
 		name_edit.hide()
 		name_label.show()
 		name_edit.set("custom_colors/font_color", Color("ffffff"))
-		description.readonly = true
+		description.hide()
 		if text == "": description.text = ""
 		else: description.text = get_description()
 	else:
@@ -62,7 +69,7 @@ func set_name(text="", read_only=false):
 		name_edit.show()
 		name_edit.set("custom_colors/font_color",CharacterHandler.selection[0].colour)
 		text = CharacterHandler.selection[0].name
-		description.readonly = false
+		description.show()
 		description.text = CharacterHandler.selection[0].description
 	name_edit.text = text
 	name_label.text = text
@@ -108,15 +115,12 @@ func _on_Description_text_changed():
 	CharacterHandler.selection[0].description = description.text
 
 
-func _on_Tree_deselect():
-	header.hide()
-	group_note.hide()
-	description.hide()
-
 
 func create(animations):
 	var new_animation = animation_source.instance()
 	new_animation.animations = animations
+	new_animation.connect("confirm", confirm, "confirm")
+	confirm.connect("action_confirmed", new_animation, "delete")
 	animation_container.add_child(new_animation)
 
 
@@ -137,3 +141,19 @@ func get_common_animations():
 		for a in result:
 			if not a in animations: result.erase(a)
 	return result
+
+
+func _on_Delete_pressed():
+	if len(CharacterHandler.selection) == 1:
+		var character = CharacterHandler.selection[0]
+		if character.is_group:
+			confirm.confirm(self,"Delete Group")
+		else:
+			confirm.confirm(self,"Delete Character")
+	elif len(CharacterHandler.selection) > 1:
+		confirm.confirm(self,"Delete Characters")
+
+func delete_confirmed(node):
+	if node != self: return
+	CharacterHandler.delete_selection()
+	CharacterHandler.emit_signal("update")

@@ -18,7 +18,8 @@ var is_group = false
 
 func reparent(new):
 	parent = new
-	if new: depth = new.depth+1
+	if new is int: return
+	elif new: depth = new.depth+1
 	for member in get_members():
 		member.reparent(self)
 
@@ -44,3 +45,10 @@ func fix_index():
 		if i in siblings: continue
 		index = i
 		break
+
+
+func save():
+	var result = inst2dict(self)
+	if parent: result.parent = parent.id
+	return result
+

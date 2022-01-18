@@ -52,7 +52,7 @@ slot/0/right_enabled = false
 slot/0/right_type = 0
 slot/0/right_color = Color( 1, 1, 1, 1 )
 
-[node name="TextEdit" type="TextEdit" parent="." index="0" groups=[
+[node name="Text" type="TextEdit" parent="." index="0" groups=[
 "big",
 ]]
 margin_left = 28.0

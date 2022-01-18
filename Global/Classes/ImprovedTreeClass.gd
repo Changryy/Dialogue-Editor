@@ -18,12 +18,13 @@ func init(new_handler, new_default_name=""):
 	draw_tree()
 
 func draw_tree():
+	emit_signal("deselect")
 	clear()
 	items.clear()
 	handler.selection.clear()
 	for c in handler.items: create(c)
 
-func create(item: Item):
+func create(item):
 	var parent = null
 	if item.parent: parent = get_item(item.parent.id)
 	var tree_item = create_item(parent)
@@ -70,10 +71,11 @@ func update_item(id=null): # signal
 	var new_colour = item.colour
 	tree_item.set_custom_color(0, new_colour)
 
-func nothing_selected():
+func nothing_selected(a=null):
 	handler.selection.clear()
 	get_root().call_recursive("deselect", 0)
 	emit_signal("deselect")
+
 
 func item_collapsed(tree_item):
 	var item = handler.get_item(tree_item.get_metadata(0))
@@ -81,14 +83,23 @@ func item_collapsed(tree_item):
 
 
 func get_drag_data(position: Vector2):
-	var selected: TreeItem = get_selected()
-	if is_instance_valid(selected):
-		return 0
+	var container = VBoxContainer.new()
+	handler.selection.sort_custom(handler, "sort_items")
+	for item in handler.selection:
+		var l = Label.new()
+		l.text = item.name
+		if item.name == "":
+			if item.is_group: l.text = handler.DEFAULT_GROUP_NAME
+			else: l.text = default_item_name
+		l.modulate = item.colour
+		container.add_child(l)
+	set_drag_preview(container)
+	return 0
 
 
 func can_drop_data(_pos, data):
 	var tree_item = get_item_at_position(_pos)
-	var item : Item
+	var item
 	if not tree_item: return true
 	item = handler.get_item(tree_item.get_metadata(0))
 	if item.is_group: set_drop_mode_flags(3)
@@ -99,7 +110,7 @@ func can_drop_data(_pos, data):
 func drop_data(_pos, data):
 	var pos = get_drop_section_at_position(_pos)
 	var tree_item = get_item_at_position(_pos)
-	var target : Item
+	var target
 	if pos == -100:
 		target = handler.get_item()
 		pos = 0
@@ -109,7 +120,7 @@ func drop_data(_pos, data):
 	
 	if target.id == 0: pos = 0
 	
-	var parent = target.parent as Item
+	var parent = target
 	while parent:
 		if parent in handler.selection: return
 		parent = parent.parent

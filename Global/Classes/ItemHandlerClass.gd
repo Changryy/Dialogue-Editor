@@ -6,8 +6,9 @@ const DEFAULT_GROUP_NAME = "Group"
 
 var items = []
 var selection = []
+var deletion = []
 var item_index = 0
-var item_class = Item
+var item_class
 
 func sort_items(a, b):
 		# store original depth
@@ -50,11 +51,27 @@ func create(name="",parent=null,is_group=false,is_collapsed=false):
 	items.append(item)
 	return item
 
-func delete(item):
+func delete(parent_item=null):
+	if parent_item: delete_recursive(parent_item)
+	while len(deletion) > 0:
+		var item = deletion[0]
+		if item in items: items.erase(item)
+		if item in selection: selection.erase(item)
+		deletion.erase(item)
+		item.free()
+	emit_signal("update")
+
+
+func delete_recursive(item):
 	if item.is_group:
 		for x in items:
-			if x.parent == item: delete(x)
-	items.erase(item)
+			if x.parent == item: delete_recursive(x)
+	deletion.append(item)
+
+func delete_selection():
+	for item in selection:
+		delete_recursive(item)
+	delete()
 
 func get_item(id=0):
 	if id == 0 and len(items) > 0: return items[0]
@@ -118,4 +135,16 @@ func _input(event):
 func sort():
 	items.sort_custom(self, "sort_items")
 
+func save():
+	var result = []
+	for item in items:
+		result.append(item.save())
+	return result
 
+func load_items(new_items):
+	items.clear()
+	for item in new_items:
+		item = dict2inst(item)
+		item.handler = self
+		item.parent = get_item(item.parent)
+		items.append(item)

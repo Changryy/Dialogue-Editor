@@ -1,13 +1,19 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://GraphEditors/Editor.gd" type="Script" id=1]
-[ext_resource path="res://GraphEditors/Story/Nodes/Scene.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GraphEditors/Story/Nodes/Scene/Scene.tscn" type="PackedScene" id=2]
 [ext_resource path="res://GraphEditors/Scene/Nodes/Start.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Misc/theme.tres" type="Theme" id=4]
+[ext_resource path="res://GraphEditors/Story/ClueEditor/ClueTree.gd" type="Script" id=5]
 [ext_resource path="res://Misc/PlaceholderText.gd" type="Script" id=6]
-[ext_resource path="res://GraphEditors/Story/CharacterEditor/Tree.gd" type="Script" id=7]
-[ext_resource path="res://GraphEditors/Story/CharacterEditor/Parameters.gd" type="Script" id=8]
+[ext_resource path="res://GraphEditors/Story/CharacterEditor/CharacterTree.gd" type="Script" id=7]
+[ext_resource path="res://GraphEditors/Story/CharacterEditor/CharacterParameters.gd" type="Script" id=8]
 [ext_resource path="res://GraphEditors/Story/CharacterEditor/Animation/Animation.tscn" type="PackedScene" id=9]
+[ext_resource path="res://GraphEditors/Story/ClueEditor/ClueParameters.gd" type="Script" id=10]
+[ext_resource path="res://GraphEditors/Story/Parameters.gd" type="Script" id=11]
+[ext_resource path="res://GraphEditors/Story/ConfirmationDialog.gd" type="Script" id=12]
+[ext_resource path="res://GraphEditors/Story/FileDialog.gd" type="Script" id=13]
+[ext_resource path="res://GraphEditors/Story/Nodes/Custom/Custom.tscn" type="PackedScene" id=14]
 
 [node name="Story" type="Control"]
 anchor_right = 1.0
@@ -17,11 +23,13 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-g = NodePath("Split/Split/GraphEdit")
+g = NodePath("Content/Split/Split/GraphEdit")
 add_node = NodePath("AddNode")
-scenes = [ ExtResource( 2 ) ]
+confirm = NodePath("ConfirmationDialog")
+scenes = [ ExtResource( 2 ), ExtResource( 14 ) ]
+type = "story"
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0.12549, 0.141176, 0.192157, 1 )
@@ -34,23 +42,69 @@ margin_left = 499.495
 margin_top = 266.023
 margin_right = 515.495
 margin_bottom = 282.023
-items = [ "Add Scene", null, 0, false, false, 0, 0, null, "", false ]
+items = [ "Add Scene", null, 0, false, false, 0, 0, null, "", false, "Custom Scene", null, 0, false, false, 1, 0, null, "", false ]
 hide_on_state_item_selection = true
 
-[node name="Split" type="HSplitContainer" parent="."]
+[node name="Content" type="VBoxContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-split_offset = 134
+custom_constants/separation = 0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Tabs" type="TabContainer" parent="Split"]
-margin_right = 144.0
+[node name="Header" type="HBoxContainer" parent="Content"]
+margin_right = 1024.0
+margin_bottom = 22.0
+custom_constants/separation = 0
+
+[node name="Save" type="Button" parent="Content/Header"]
+margin_right = 41.0
+margin_bottom = 22.0
+text = "Save"
+
+[node name="Open" type="Button" parent="Content/Header"]
+margin_left = 41.0
+margin_right = 88.0
+margin_bottom = 22.0
+text = "Open"
+
+[node name="Indicator" type="Label" parent="Content/Header"]
+visible = false
+modulate = Color( 1, 1, 1, 0.498039 )
+margin_left = 88.0
+margin_right = 133.0
+margin_bottom = 22.0
+text = "Saved"
+
+[node name="Blank" type="Control" parent="Content/Header"]
+margin_left = 88.0
+margin_right = 972.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+
+[node name="Export" type="Button" parent="Content/Header"]
+margin_left = 972.0
+margin_right = 1024.0
+margin_bottom = 22.0
+text = "Export"
+
+[node name="Split" type="HSplitContainer" parent="Content"]
+margin_top = 22.0
+margin_right = 1024.0
 margin_bottom = 600.0
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tabs" type="TabContainer" parent="Content/Split"]
+margin_right = 144.0
+margin_bottom = 578.0
+rect_min_size = Vector2( 144, 578 )
 tab_align = 0
 
-[node name="Characters" type="Control" parent="Split/Tabs"]
+[node name="Characters" type="Control" parent="Content/Split/Tabs"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -58,7 +112,7 @@ margin_top = 29.0
 margin_right = -5.0
 margin_bottom = -5.0
 
-[node name="Characters" type="VBoxContainer" parent="Split/Tabs/Characters"]
+[node name="Characters" type="VBoxContainer" parent="Content/Split/Tabs/Characters"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_clip_content = true
@@ -67,59 +121,85 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Tree" type="Tree" parent="Split/Tabs/Characters/Characters"]
+[node name="Tree" type="Tree" parent="Content/Split/Tabs/Characters/Characters"]
 margin_right = 134.0
-margin_bottom = 544.0
+margin_bottom = 522.0
 size_flags_vertical = 3
 hide_root = true
 select_mode = 2
 script = ExtResource( 7 )
 
-[node name="AddCharacter" type="Button" parent="Split/Tabs/Characters/Characters"]
-margin_top = 544.0
+[node name="AddCharacter" type="Button" parent="Content/Split/Tabs/Characters/Characters"]
+margin_top = 522.0
 margin_right = 134.0
-margin_bottom = 566.0
+margin_bottom = 544.0
 text = "Add Character"
 
-[node name="Clues" type="Control" parent="Split/Tabs"]
+[node name="Clues" type="Control" parent="Content/Split/Tabs"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
 margin_top = 29.0
-margin_right = -334.0
-margin_bottom = -531.0
+margin_right = -5.0
+margin_bottom = -5.0
 
-[node name="Split" type="HSplitContainer" parent="Split"]
-margin_left = 152.0
-margin_right = 1024.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-split_offset = -184
-
-[node name="GraphEdit" type="GraphEdit" parent="Split/Split"]
-margin_right = 680.0
-margin_bottom = 600.0
-size_flags_horizontal = 3
-scroll_offset = Vector2( -319, 0 )
-use_snap = false
+[node name="Clues" type="VBoxContainer" parent="Content/Split/Tabs/Clues"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Start" parent="Split/Split/GraphEdit" instance=ExtResource( 3 )]
-margin_left = 19.0
-margin_top = 260.0
-margin_right = 80.0
-margin_bottom = 290.0
-offset = Vector2( -300, 260 )
+[node name="Tree" type="Tree" parent="Content/Split/Tabs/Clues/Clues"]
+margin_right = 134.0
+margin_bottom = 522.0
+size_flags_vertical = 3
+hide_root = true
+select_mode = 2
+script = ExtResource( 5 )
 
-[node name="Parameters" type="Control" parent="Split/Split"]
+[node name="AddClue" type="Button" parent="Content/Split/Tabs/Clues/Clues"]
+margin_top = 522.0
+margin_right = 134.0
+margin_bottom = 544.0
+text = "Add Clue"
+
+[node name="Split" type="HSplitContainer" parent="Content/Split"]
+margin_left = 152.0
+margin_right = 1024.0
+margin_bottom = 578.0
+size_flags_horizontal = 3
+split_offset = -184
+
+[node name="GraphEdit" type="GraphEdit" parent="Content/Split/Split"]
+margin_right = 872.0
+margin_bottom = 578.0
+size_flags_horizontal = 3
+right_disconnects = true
+scroll_offset = Vector2( -300, -34 )
+use_snap = false
+minimap_enabled = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Start" parent="Content/Split/Split/GraphEdit" instance=ExtResource( 3 )]
+margin_left = 10.0
+margin_top = 294.0
+margin_right = 71.0
+margin_bottom = 324.0
+offset = Vector2( -290, 260 )
+
+[node name="Parameters" type="Control" parent="Content/Split/Split"]
+visible = false
 margin_left = 688.0
 margin_right = 872.0
-margin_bottom = 600.0
+margin_bottom = 578.0
+script = ExtResource( 11 )
 
-[node name="Characters" type="VBoxContainer" parent="Split/Split/Parameters"]
+[node name="Characters" type="VBoxContainer" parent="Content/Split/Split/Parameters"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -128,6 +208,7 @@ script = ExtResource( 8 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+confirm = NodePath("../../../../../ConfirmationDialog")
 name_edit = NodePath("Header/Name")
 name_label = NodePath("Header/Label")
 colour_picker = NodePath("Header/Colour")
@@ -137,19 +218,19 @@ header = NodePath("Header")
 group_note = NodePath("Group")
 animation_source = ExtResource( 9 )
 
-[node name="Header" type="HBoxContainer" parent="Split/Split/Parameters/Characters"]
+[node name="Header" type="HBoxContainer" parent="Content/Split/Split/Parameters/Characters"]
 margin_right = 184.0
 margin_bottom = 22.0
 custom_constants/separation = 0
 
-[node name="Name" type="LineEdit" parent="Split/Split/Parameters/Characters/Header"]
+[node name="Name" type="LineEdit" parent="Content/Split/Split/Parameters/Characters/Header"]
 margin_right = 128.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 placeholder_text = "Name"
 
-[node name="Label" type="Label" parent="Split/Split/Parameters/Characters/Header"]
+[node name="Label" type="Label" parent="Content/Split/Split/Parameters/Characters/Header"]
 visible = false
 margin_left = 119.0
 margin_right = 310.0
@@ -159,7 +240,7 @@ size_flags_vertical = 1
 text = "Multiple Selected"
 clip_text = true
 
-[node name="Colour" type="ColorPickerButton" parent="Split/Split/Parameters/Characters/Header"]
+[node name="Colour" type="ColorPickerButton" parent="Content/Split/Split/Parameters/Characters/Header"]
 margin_left = 128.0
 margin_right = 156.0
 margin_bottom = 22.0
@@ -167,7 +248,7 @@ rect_min_size = Vector2( 28, 22 )
 color = Color( 1, 1, 1, 1 )
 edit_alpha = false
 
-[node name="Delete" type="Button" parent="Split/Split/Parameters/Characters/Header"]
+[node name="Delete" type="Button" parent="Content/Split/Split/Parameters/Characters/Header"]
 margin_left = 156.0
 margin_right = 184.0
 margin_bottom = 22.0
@@ -178,22 +259,21 @@ custom_colors/font_color_hover = Color( 1, 0, 0, 1 )
 custom_colors/font_color_pressed = Color( 1, 0, 0, 1 )
 text = "X"
 
-[node name="Splitter" type="VSplitContainer" parent="Split/Split/Parameters/Characters"]
+[node name="Splitter" type="VSplitContainer" parent="Content/Split/Split/Parameters/Characters"]
 margin_top = 22.0
 margin_right = 184.0
-margin_bottom = 578.0
+margin_bottom = 556.0
 size_flags_vertical = 3
 split_offset = 140
 
-[node name="Description" type="TextEdit" parent="Split/Split/Parameters/Characters/Splitter"]
+[node name="Description" type="TextEdit" parent="Content/Split/Split/Parameters/Characters/Splitter"]
 margin_right = 184.0
 margin_bottom = 148.0
 script = ExtResource( 6 )
-label = NodePath("../../../Control/Parameters/Splitter/Description/Label")
 placeholder = "Description"
 alpha = 0.4
 
-[node name="Label" type="Label" parent="Split/Split/Parameters/Characters/Splitter/Description"]
+[node name="Label" type="Label" parent="Content/Split/Split/Parameters/Characters/Splitter/Description"]
 modulate = Color( 1, 1, 1, 0.4 )
 margin_left = 2.0
 margin_right = 8.0
@@ -203,18 +283,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Split/Split/Parameters/Characters/Splitter"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Content/Split/Split/Parameters/Characters/Splitter"]
 margin_top = 156.0
 margin_right = 184.0
-margin_bottom = 556.0
+margin_bottom = 534.0
 
-[node name="Animations" type="VBoxContainer" parent="Split/Split/Parameters/Characters/Splitter/ScrollContainer"]
+[node name="Animations" type="VBoxContainer" parent="Content/Split/Split/Parameters/Characters/Splitter/ScrollContainer"]
 margin_right = 184.0
-margin_bottom = 400.0
+margin_bottom = 378.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Group" type="RichTextLabel" parent="Split/Split/Parameters/Characters"]
+[node name="Group" type="RichTextLabel" parent="Content/Split/Split/Parameters/Characters"]
 visible = false
 margin_top = 525.0
 margin_right = 508.0
@@ -223,43 +303,51 @@ text = "Note that this is a group.
 Animations that are edited here will be edited globally for all the characters inside the group."
 fit_content_height = true
 
-[node name="AddAnimation" type="Button" parent="Split/Split/Parameters/Characters"]
-margin_top = 578.0
+[node name="AddAnimation" type="Button" parent="Content/Split/Split/Parameters/Characters"]
+margin_top = 556.0
 margin_right = 184.0
-margin_bottom = 600.0
+margin_bottom = 578.0
 text = "Add Animation"
 
-[node name="Clues" type="VBoxContainer" parent="Split/Split/Parameters"]
+[node name="Clues" type="VBoxContainer" parent="Content/Split/Split/Parameters"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 custom_constants/separation = 0
+script = ExtResource( 10 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+confirm = NodePath("../../../../../ConfirmationDialog")
+name_edit = NodePath("Header/Name")
+name_label = NodePath("Header/Label")
+colour_picker = NodePath("Header/Colour")
+body = NodePath("Body")
+obtainment = NodePath("Body/Obtainment")
+description = NodePath("Body/Description")
 
-[node name="Header" type="HBoxContainer" parent="Split/Split/Parameters/Clues"]
+[node name="Header" type="HBoxContainer" parent="Content/Split/Split/Parameters/Clues"]
 margin_right = 184.0
 margin_bottom = 22.0
 custom_constants/separation = 0
 
-[node name="Name" type="LineEdit" parent="Split/Split/Parameters/Clues/Header"]
+[node name="Name" type="LineEdit" parent="Content/Split/Split/Parameters/Clues/Header"]
 margin_right = 128.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 placeholder_text = "Name"
 
-[node name="Label" type="Label" parent="Split/Split/Parameters/Clues/Header"]
+[node name="Label" type="Label" parent="Content/Split/Split/Parameters/Clues/Header"]
 visible = false
-margin_left = 119.0
-margin_right = 310.0
+margin_right = 128.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Multiple Selected"
 clip_text = true
 
-[node name="Colour" type="ColorPickerButton" parent="Split/Split/Parameters/Clues/Header"]
+[node name="Colour" type="ColorPickerButton" parent="Content/Split/Split/Parameters/Clues/Header"]
 margin_left = 128.0
 margin_right = 156.0
 margin_bottom = 22.0
@@ -267,7 +355,7 @@ rect_min_size = Vector2( 28, 22 )
 color = Color( 1, 1, 1, 1 )
 edit_alpha = false
 
-[node name="Delete" type="Button" parent="Split/Split/Parameters/Clues/Header"]
+[node name="Delete" type="Button" parent="Content/Split/Split/Parameters/Clues/Header"]
 margin_left = 156.0
 margin_right = 184.0
 margin_bottom = 22.0
@@ -278,22 +366,21 @@ custom_colors/font_color_hover = Color( 1, 0, 0, 1 )
 custom_colors/font_color_pressed = Color( 1, 0, 0, 1 )
 text = "X"
 
-[node name="Splitter" type="VSplitContainer" parent="Split/Split/Parameters/Clues"]
+[node name="Body" type="VSplitContainer" parent="Content/Split/Split/Parameters/Clues"]
 margin_top = 22.0
 margin_right = 184.0
 margin_bottom = 578.0
 size_flags_vertical = 3
-split_offset = 213
+split_offset = 246
 
-[node name="Obtainment" type="TextEdit" parent="Split/Split/Parameters/Clues/Splitter"]
+[node name="Obtainment" type="TextEdit" parent="Content/Split/Split/Parameters/Clues/Body"]
 margin_right = 184.0
-margin_bottom = 221.0
+margin_bottom = 254.0
 script = ExtResource( 6 )
-label = NodePath("../Obtainment/Label")
 placeholder = "Obtainment"
 alpha = 0.4
 
-[node name="Label" type="Label" parent="Split/Split/Parameters/Clues/Splitter/Obtainment"]
+[node name="Label" type="Label" parent="Content/Split/Split/Parameters/Clues/Body/Obtainment"]
 modulate = Color( 1, 1, 1, 0.4 )
 margin_left = 2.0
 margin_right = 8.0
@@ -303,16 +390,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Description2" type="TextEdit" parent="Split/Split/Parameters/Clues/Splitter"]
-margin_top = 229.0
+[node name="Description" type="TextEdit" parent="Content/Split/Split/Parameters/Clues/Body"]
+margin_top = 262.0
 margin_right = 184.0
 margin_bottom = 556.0
 script = ExtResource( 6 )
-label = NodePath("Label")
 placeholder = "Description"
 alpha = 0.4
 
-[node name="Label" type="Label" parent="Split/Split/Parameters/Clues/Splitter/Description2"]
+[node name="Label" type="Label" parent="Content/Split/Split/Parameters/Clues/Body/Description"]
 modulate = Color( 1, 1, 1, 0.4 )
 margin_left = 2.0
 margin_right = 8.0
@@ -322,24 +408,73 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Group" type="RichTextLabel" parent="Split/Split/Parameters/Clues"]
-visible = false
-margin_top = 525.0
-margin_right = 508.0
-margin_bottom = 578.0
-fit_content_height = true
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -222.0
+margin_top = -70.0
+margin_right = 222.0
+margin_bottom = 70.0
+resizable = true
+dialog_autowrap = true
+script = ExtResource( 12 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="AddAnimation" type="Button" parent="Split/Split/Parameters/Clues"]
-margin_top = 578.0
-margin_right = 184.0
-margin_bottom = 600.0
-text = "Add Animation"
-[connection signal="deselect" from="Split/Tabs/Characters/Characters/Tree" to="Split/Split/Parameters/Characters" method="_on_Tree_deselect"]
-[connection signal="select" from="Split/Tabs/Characters/Characters/Tree" to="Split/Split/Parameters/Characters" method="_on_Tree_select"]
-[connection signal="pressed" from="Split/Tabs/Characters/Characters/AddCharacter" to="Split/Tabs/Characters/Characters/Tree" method="_on_AddCharacter_pressed"]
-[connection signal="update_item" from="Split/Split/Parameters/Characters" to="Split/Tabs/Characters/Characters/Tree" method="update_item"]
-[connection signal="text_changed" from="Split/Split/Parameters/Characters/Header/Name" to="Split/Split/Parameters/Characters" method="_on_Name_text_changed"]
-[connection signal="color_changed" from="Split/Split/Parameters/Characters/Header/Colour" to="Split/Split/Parameters/Characters" method="_on_Colour_color_changed"]
-[connection signal="text_changed" from="Split/Split/Parameters/Characters/Splitter/Description" to="Split/Split/Parameters/Characters" method="_on_Description_text_changed"]
-[connection signal="pressed" from="Split/Split/Parameters/Characters/AddAnimation" to="Split/Split/Parameters/Characters" method="_on_AddAnimation_pressed"]
-[connection signal="pressed" from="Split/Split/Parameters/Clues/AddAnimation" to="Split/Split/Parameters/Clues" method="_on_AddAnimation_pressed"]
+[node name="FileDialog" type="FileDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -304.0
+margin_top = -237.0
+margin_right = 304.0
+margin_bottom = 237.0
+window_title = "Save File"
+resizable = true
+access = 2
+filters = PoolStringArray( "*.dialogue ; Project File" )
+current_dir = "/Projects/Godot/DialogueEditor"
+current_file = "project.dialogue"
+current_path = "/Projects/Godot/DialogueEditor/project.dialogue"
+script = ExtResource( 13 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+g = NodePath("../Content/Split/Split/GraphEdit")
+scenes = [ ExtResource( 2 ), ExtResource( 14 ) ]
+confirm = NodePath("../ConfirmationDialog")
+editor = NodePath("..")
+indicator = NodePath("../Content/Header/Indicator")
+
+[node name="Timer" type="Timer" parent="FileDialog"]
+
+[connection signal="pressed" from="Content/Header/Save" to="FileDialog" method="_on_Save_pressed"]
+[connection signal="pressed" from="Content/Header/Open" to="FileDialog" method="_on_Open_pressed"]
+[connection signal="pressed" from="Content/Header/Export" to="FileDialog" method="_on_Export_pressed"]
+[connection signal="tab_changed" from="Content/Split/Tabs" to="Content/Split/Tabs/Characters/Characters/Tree" method="nothing_selected"]
+[connection signal="tab_changed" from="Content/Split/Tabs" to="Content/Split/Tabs/Clues/Clues/Tree" method="nothing_selected"]
+[connection signal="deselect" from="Content/Split/Tabs/Characters/Characters/Tree" to="Content/Split/Split/Parameters" method="_on_Tree_deselect"]
+[connection signal="select" from="Content/Split/Tabs/Characters/Characters/Tree" to="Content/Split/Split/Parameters/Characters" method="_on_Tree_select"]
+[connection signal="pressed" from="Content/Split/Tabs/Characters/Characters/AddCharacter" to="Content/Split/Tabs/Characters/Characters/Tree" method="_on_AddCharacter_pressed"]
+[connection signal="deselect" from="Content/Split/Tabs/Clues/Clues/Tree" to="Content/Split/Split/Parameters" method="_on_Tree_deselect"]
+[connection signal="select" from="Content/Split/Tabs/Clues/Clues/Tree" to="Content/Split/Split/Parameters/Clues" method="_on_Tree_select"]
+[connection signal="pressed" from="Content/Split/Tabs/Clues/Clues/AddClue" to="Content/Split/Tabs/Clues/Clues/Tree" method="_on_AddClue_pressed"]
+[connection signal="offset_changed" from="Content/Split/Split/GraphEdit/Start" to="FileDialog" method="_on_Start_offset_changed"]
+[connection signal="update_item" from="Content/Split/Split/Parameters/Characters" to="Content/Split/Tabs/Characters/Characters/Tree" method="update_item"]
+[connection signal="text_changed" from="Content/Split/Split/Parameters/Characters/Header/Name" to="Content/Split/Split/Parameters/Characters" method="_on_Name_text_changed"]
+[connection signal="color_changed" from="Content/Split/Split/Parameters/Characters/Header/Colour" to="Content/Split/Split/Parameters/Characters" method="_on_Colour_color_changed"]
+[connection signal="pressed" from="Content/Split/Split/Parameters/Characters/Header/Delete" to="Content/Split/Split/Parameters/Characters" method="_on_Delete_pressed"]
+[connection signal="text_changed" from="Content/Split/Split/Parameters/Characters/Splitter/Description" to="Content/Split/Split/Parameters/Characters" method="_on_Description_text_changed"]
+[connection signal="pressed" from="Content/Split/Split/Parameters/Characters/AddAnimation" to="Content/Split/Split/Parameters/Characters" method="_on_AddAnimation_pressed"]
+[connection signal="update_item" from="Content/Split/Split/Parameters/Clues" to="Content/Split/Tabs/Clues/Clues/Tree" method="update_item"]
+[connection signal="text_changed" from="Content/Split/Split/Parameters/Clues/Header/Name" to="Content/Split/Split/Parameters/Clues" method="_on_Name_text_changed"]
+[connection signal="color_changed" from="Content/Split/Split/Parameters/Clues/Header/Colour" to="Content/Split/Split/Parameters/Clues" method="_on_Colour_color_changed"]
+[connection signal="pressed" from="Content/Split/Split/Parameters/Clues/Header/Delete" to="Content/Split/Split/Parameters/Clues" method="_on_Delete_pressed"]
+[connection signal="text_changed" from="Content/Split/Split/Parameters/Clues/Body/Obtainment" to="Content/Split/Split/Parameters/Clues" method="_on_Obtainment_text_changed"]
+[connection signal="text_changed" from="Content/Split/Split/Parameters/Clues/Body/Description" to="Content/Split/Split/Parameters/Clues" method="_on_Description_text_changed"]
+[connection signal="dir_selected" from="FileDialog" to="FileDialog" method="_on_FileDialog_dir_selected"]
+[connection signal="timeout" from="FileDialog/Timer" to="FileDialog" method="_on_Timer_timeout"]

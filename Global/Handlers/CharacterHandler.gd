@@ -10,3 +10,7 @@ func _ready():
 	sort()
 
 
+func load_items(new_items):
+	.load_items(new_items)
+	for item in items:
+		item.fix_animations()
